@@ -2,193 +2,85 @@
 
 @section('content')
 
-<div class="topbar">
+<div class="welcome">
+    <h1>Welcome back!</h1>
+    <p>Manage your tasks and keep track of your progress.</p>
+</div>
 
-    <div>
-        <div class="page-title">
-            Tasks
-        </div>
+<div class="stats">
 
-        <div class="page-subtitle">
-            View and manage all your tasks.
+    <div class="stat-card">
+        <h3>TOTAL TASKS</h3>
+        <div class="stat-number">
+            {{ $totalTasks }}
         </div>
     </div>
 
-    <a href="{{ route('tasks.create') }}" class="add-button">
-        + Add Task
-    </a>
+    <div class="stat-card">
+        <h3>PENDING</h3>
+        <div class="stat-number">
+            {{ $pendingTasks }}
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>COMPLETED</h3>
+        <div class="stat-number">
+            {{ $completedTasks }}
+        </div>
+    </div>
 
 </div>
 
-<style>
+<div class="tasks-header">
+    <h2>My Tasks</h2>
 
-    .task-card {
-        background: white;
-        border: 1px solid #eee;
-        border-radius: 14px;
-        padding: 20px;
-        margin-bottom: 15px;
-    }
+    <a href="{{ route('tasks.create') }}" class="btn btn-primary">
+        + Add Task
+    </a>
+</div>
 
-    .task-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        align-items: center;
-    }
+<div class="task-list">
 
-    .task-title {
-        font-size: 17px;
-        font-weight: bold;
-    }
+    @forelse($tasks as $task)
 
-    .description {
-        color: #777;
-        font-size: 13px;
-        margin-top: 7px;
-    }
+        <div class="task">
 
-    .due-date {
-        color: #888;
-        font-size: 12px;
-        margin-top: 8px;
-    }
+            <div class="task-info">
 
-    .actions {
-        display: flex;
-        gap: 8px;
-    }
+                <h3>{{ $task->task_name }}</h3>
 
-    .btn {
-        border: none;
-        padding: 9px 13px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: bold;
-    }
+                <p>
+                    {{ $task->description ?: 'No description provided.' }}
+                </p>
 
-    .btn-edit {
-        background: #bcc4f2;
-        color: #252525;
-    }
+                <span class="status {{ $task->status === 'Completed' ? 'completed' : 'pending' }}">
+                    {{ $task->status }}
+                </span>
 
-    .btn-delete {
-        background: #ffe0e0;
-        color: #d63232;
-    }
-
-    .btn-status {
-        background: #e93f1a;
-        color: white;
-    }
-
-    .badge {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 6px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: bold;
-    }
-
-    .pending {
-        background: #fff0e9;
-        color: #e93f1a;
-    }
-
-    .completed {
-        background: #e0f5e7;
-        color: #24834a;
-    }
-
-</style>
-
-@if(session('success'))
-
-    <div style="
-        background:#e0f5e7;
-        color:#24834a;
-        padding:14px;
-        border-radius:10px;
-        margin-bottom:20px;
-    ">
-        {{ session('success') }}
-    </div>
-
-@endif
-
-@forelse($tasks as $task)
-
-    <div class="task-card">
-
-        <div class="task-row">
-
-            <div>
-
-                <div class="task-title">
-                    {{ $task->task_name }}
-                </div>
-
-                <div class="description">
-                    {{ $task->description ?: 'No description' }}
-                </div>
-
-                <div class="due-date">
-
-                    @if($task->due_date)
-                        Due: {{ $task->due_date->format('M d, Y') }}
-                    @else
-                        No due date
-                    @endif
-
-                </div>
-
-                @if($task->status === 'Completed')
-
-                    <span class="badge completed">
-                        Completed
-                    </span>
-
-                @else
-
-                    <span class="badge pending">
-                        Pending
-                    </span>
-
+                @if($task->due_date)
+                    <div class="due-date">
+                        Due: {{ \Carbon\Carbon::parse($task->due_date)->format('F d, Y') }}
+                    </div>
                 @endif
 
             </div>
 
-            <div class="actions">
+            <div class="task-actions">
 
-                <form method="POST"
-                      action="{{ route('tasks.status', $task) }}">
-
-                    @csrf
-                    @method('PATCH')
-
-                    <button class="btn btn-status">
-                        {{ $task->status === 'Pending' ? 'Complete' : 'Pending' }}
-                    </button>
-
-                </form>
-
-                <a
-                    href="{{ route('tasks.edit', $task) }}"
-                    class="btn btn-edit">
+                <a href="{{ route('tasks.edit', $task) }}"
+                   class="btn btn-edit">
                     Edit
                 </a>
 
-                <form
-                    method="POST"
-                    action="{{ route('tasks.destroy', $task) }}"
-                    onsubmit="return confirm('Delete this task?');">
+                <form action="{{ route('tasks.destroy', $task) }}"
+                      method="POST"
+                      onsubmit="return confirm('Delete this task?')">
 
                     @csrf
                     @method('DELETE')
 
-                    <button class="btn btn-delete">
+                    <button type="submit" class="btn btn-delete">
                         Delete
                     </button>
 
@@ -198,16 +90,15 @@
 
         </div>
 
-    </div>
+    @empty
 
-@empty
+        <div class="empty">
+            <h3>No tasks yet.</h3>
+            <p>Create your first task to get started.</p>
+        </div>
 
-    <div class="task-card">
-        <p style="color:#777;">
-            No tasks found.
-        </p>
-    </div>
+    @endforelse
 
-@endforelse
+</div>
 
 @endsection

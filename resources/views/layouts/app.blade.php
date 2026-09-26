@@ -4,186 +4,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? 'Personal Task Manager' }}</title>
+    <title>Personal Task Manager</title>
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f7f7f9;
-            color: #252525;
+            font-family: Arial, sans-serif;
+            background: #f5f3ff;
+            color: #29213d;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* SIDEBAR */
-
-        .sidebar {
-            width: 250px;
-            min-height: 100vh;
-            background: white;
-            border-right: 1px solid #e8e8e8;
-            padding: 25px 18px;
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            margin-bottom: 35px;
-        }
-
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: #e93f1a;
+        .navbar {
+            background: #6d28d9;
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .menu-title {
-            font-size: 11px;
-            font-weight: bold;
-            color: #999;
-            text-transform: uppercase;
-            padding: 0 12px;
-            margin-bottom: 10px;
-        }
-
-        .nav {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .nav a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #666;
-            transition: 0.2s;
-        }
-
-        .nav a:hover {
-            background: #f1f2ff;
-            color: #e93f1a;
-        }
-
-        .nav a.active {
-            background: #bcc4f2;
-            color: #222;
-            font-weight: bold;
-        }
-
-        .nav-icon {
-            width: 22px;
-            text-align: center;
-        }
-
-        /* MAIN */
-
-        .main {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            min-height: 100vh;
-            padding: 35px;
-        }
-
-        .topbar {
+            padding: 18px 7%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
         }
 
-        .page-title {
-            font-size: 28px;
+        .logo {
+            font-size: 21px;
             font-weight: bold;
         }
 
-        .page-subtitle {
-            color: #777;
-            margin-top: 5px;
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            color: #4c1d95;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #6b6478;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(76, 29, 149, 0.08);
+            border-left: 5px solid #7c3aed;
+        }
+
+        .stat-card h3 {
+            color: #756d83;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #5b21b6;
+        }
+
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .tasks-header h2 {
+            color: #4c1d95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 17px;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
             font-size: 14px;
         }
 
-        .add-button {
-            background: #e93f1a;
+        .btn-primary {
+            background: #7c3aed;
             color: white;
-            padding: 12px 18px;
-            border-radius: 9px;
+        }
+
+        .btn-primary:hover {
+            background: #6d28d9;
+        }
+
+        .btn-edit {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .task-list {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(76, 29, 149, 0.08);
+        }
+
+        .task {
+            padding: 22px;
+            border-bottom: 1px solid #eee9f5;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        .task-info h3 {
+            color: #3b0764;
+            margin-bottom: 7px;
+        }
+
+        .task-info p {
+            color: #756d83;
+            margin-bottom: 8px;
+        }
+
+        .due-date {
+            font-size: 13px;
+            color: #8b7f96;
+        }
+
+        .task-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: bold;
-            border: none;
-            cursor: pointer;
+            margin-bottom: 8px;
         }
 
-        .add-button:hover {
-            background: #c93213;
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
         }
 
-        /* CONTENT */
+        .completed {
+            background: #dcfce7;
+            color: #166534;
+        }
 
-        .content {
-            max-width: 1200px;
+        .alert {
+            background: #dcfce7;
+            color: #166534;
+            padding: 13px 17px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            max-width: 700px;
+            background: white;
+            padding: 30px;
             margin: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(76, 29, 149, 0.08);
         }
 
-        /* MOBILE */
+        .form-card h2 {
+            color: #4c1d95;
+            margin-bottom: 25px;
+        }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 20px 10px;
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #4b4454;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d8d1e2;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #81778d;
+        }
+
+        @media (max-width: 700px) {
+            .stats {
+                grid-template-columns: 1fr;
             }
 
-            .logo-text,
-            .menu-title,
-            .nav span {
-                display: none;
+            .task {
+                flex-direction: column;
             }
 
-            .logo {
-                justify-content: center;
+            .task-actions {
+                align-items: flex-start;
             }
 
-            .nav a {
-                justify-content: center;
+            .navbar {
+                padding: 18px 5%;
             }
 
-            .main {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 20px;
+            .container {
+                width: 92%;
             }
         }
     </style>
@@ -191,55 +274,29 @@
 
 <body>
 
-<div class="app">
+    <nav class="navbar">
+        <div class="logo">Personal Task Manager</div>
 
-    <aside class="sidebar">
+        <div>
+            <a href="{{ route('tasks.index') }}" class="nav-link">
+                Dashboard
+            </a>
 
-        <div class="logo">
-            <div class="logo-icon">✓</div>
+            <a href="{{ route('tasks.create') }}" class="nav-link">
+                Add Task
+            </a>
+        </div>
+    </nav>
 
-            <div class="logo-text">
-                Task Manager
+    <main class="container">
+        @if(session('success'))
+            <div class="alert">
+                {{ session('success') }}
             </div>
-        </div>
+        @endif
 
-        <div class="menu-title">
-            Menu
-        </div>
-
-        <nav class="nav">
-
-            <a href="{{ route('dashboard') }}"
-               class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <div class="nav-icon">⌂</div>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="{{ route('tasks.create') }}"
-               class="{{ request()->routeIs('tasks.create') ? 'active' : '' }}">
-                <div class="nav-icon">＋</div>
-                <span>Add Task</span>
-            </a>
-
-            <a href="{{ route('tasks.index') }}"
-               class="{{ request()->routeIs('tasks.index') ? 'active' : '' }}">
-                <div class="nav-icon">☷</div>
-                <span>Tasks</span>
-            </a>
-
-        </nav>
-
-    </aside>
-
-    <main class="main">
-
-        <div class="content">
-            @yield('content')
-        </div>
-
+        @yield('content')
     </main>
-
-</div>
 
 </body>
 </html>
